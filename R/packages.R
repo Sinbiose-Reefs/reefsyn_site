@@ -13,3 +13,11 @@ require(ggrepel)
 require ("scatterpie")
 require(sf)
 require(rgeos)
+
+## wordcloud
+
+require(tm)
+require(SnowballC)
+require(wordcloud)
+require(RColorBrewer)
+
