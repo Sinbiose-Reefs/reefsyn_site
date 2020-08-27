@@ -259,7 +259,7 @@ Published data are available at their repositories. Unpublished data are only av
   
 ### Grant
 
-This project is granted by the Brazilian Biodiversity Synthesis Center - SINBIOSE. This center belongs to the National Council for Scientific and Technological Development (*Conselho Nacional de Desenvolvimento Científico e Tecnológico*, CNPq).  
+This project is granted by the Brazilian Biodiversity Synthesis Center - [SINBIOSE](http://www.sinbiose.cnpq.br/web/sinbiose). This center belongs to the National Council for Scientific and Technological Development (*Conselho Nacional de Desenvolvimento Científico e Tecnológico*, CNPq).  
     
     
     
