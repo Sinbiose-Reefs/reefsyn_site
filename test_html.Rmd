@@ -1,0 +1,273 @@
+---
+title:  "Project **Brazilian Reefs in the Anthropocene**, ReefSyn"
+author: "Dra. Mariana Bender (PI, UFSM), Dr. Sérgio Floeter (Co-PI, UFSC), Dr. André Luís Luza (Post-Doc, UFSM)"
+date: "2020/08/25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Who are we?
+
+We are a team of researchers from several countries and institutions engaged in achieve a common objetive: To provide a synthesis about patterns and drivers of reef diversity and supply of ecological services. We are considering several dimensions of marine biodiverstiy, and we will make this synthesis useful to researchers, managers, and society.
+
+
+```{r, echo = F, fig.height=8,fig.width=8,,message=F, warning=F}
+
+
+## R code to load data sets and plot points
+## chamar os pacotes
+
+source("R/packages.R")
+source("R/functions.R")
+
+# open researcher data
+researcher_data <- read.xlsx(here("Data","researcher_data","PLANILHA_CONSOLIDADA.xlsx"),sheet = 1, colNames = TRUE,detectDates=F)
+# formatting data
+researcher_data$objetivos <- as.character (researcher_data$objetivos)
+researcher_data$titulo_portugues <- as.character (researcher_data$titulo_portugues)
+researcher_data$titulo_ingles <- as.character (researcher_data$titulo_ingles)
+
+## extrair as colunas que desejo analaisar
+institution <- strsplit(researcher_data$instituicao,",")
+institution <- unlist(strsplit(unlist(institution), "/"))
+institution <- gsub (" ","",institution)
+# df for word-cloud
+institution <- data.frame (inst=unique(institution) [order (unique(institution))],
+                           freq=table(institution) [order (names(table(institution)))])
+
+### titulo em ingles
+titulo_ingles <- as.character (researcher_data$titulo_ingles [which(researcher_data$titulo_ingles != "Indefinido")])
+## gerar df para o wcloud
+freq_texto_wc <-  function_freq_texto_wc (titulo_ingles)
+
+par(mfrow=c(1,2),mar=rep(1,4))
+## inst
+wordcloud(words = institution$inst, freq = institution$freq.Freq,
+          min.freq = 1,scale=c(5, .2),
+          max.words=50, 
+          random.order=FALSE, rot.per=0.15, 
+          colors=brewer.pal(8, "Dark2"))
+
+# tit english
+wordcloud(words = freq_texto_wc$word, 
+          freq = freq_texto_wc$freq.Freq,
+          min.freq = 2,scale=c(5, .2),
+          max.words=max(freq_texto_wc$freq.Freq)+3, 
+          random.order=FALSE, rot.per=0.15, 
+          colors=brewer.pal(8, "Dark2"))
+
+
+
+```
+
+
+
+
+## Where are we? Which data are we using?
+
+We are in 221 unique localities distributed along the Brazilian coast and oceanic islands. In these localities, we gather data on fish and benthic communities from published and/or yet unpublished data from local and large-scale research programs conducted along the Brazilian coast over the last decades (SISBOTA-MAR, PELD-ILOC). We are also using data collected beyond the Brazilian coast (e.g., Longo et al. 2019, GEB), including species-level trait datasets of Atlantic fishes and benthos.
+
+```{r, echo = F, fig.height=5,fig.width=5,,message=F, warning=F}
+
+
+## load occurrence data
+# aued
+occ_Aued_et_al <- read.xlsx(here("Data","occ_Aued_et_al","Updated_compiled_quadrats_allsites.xlsx"),sheet = 1, colNames = TRUE,detectDates=F)
+occ_Aued_et_al$eventDate <-convertToDate(occ_Aued_et_al$eventDate)
+# francini
+occ_Francini_et_al <- read.xlsx(here("Data","occ_Francini_et_al","Compiled_quadrats_benthic_Erika_Anaide.xlsx"),
+                            sheet = 1, colNames = TRUE,detectDates=F)
+## G longo
+occ_Longo_et_al <- read.csv(here("Data","occ_Longo_et_al","Data_Trophic_Interactions_WAtlantic_GLongo_clean.csv"))
+
+# Morais
+occ_Morais_et_al <- read.xlsx(here("Data","occ_Morais_et_al","UpdatedData_RMorais_et_al_2017.xlsx"),
+                              sheet = 1, colNames = TRUE,detectDates=F)
+occ_Morais_et_al$eventDate <- convertToDate(occ_Morais_et_al$eventDate)
+
+## PELD Iloc
+occ_PELD_iloc_ROCAS <- read.xlsx(here("Data","occ_PELD_iloc","data_Rocas_final.xlsx"),
+                                 sheet = 1, colNames = TRUE,detectDates=F)
+occ_PELD_iloc_NORONHA <- read.xlsx(here("Data","occ_PELD_iloc","Planilha_noronha_peld.xlsx"),
+                                   sheet = 1, colNames = TRUE,detectDates=F)
+
+## RNorte GLONGO
+occ_RN_Norte_Longo_peixes <- read.xlsx(here("Data","occ_RN_Norte_Longo","Censos_peixes_RN.xlsx"),
+                                sheet = 1, colNames = TRUE,detectDates=F)
+occ_RN_Norte_Longo_bentos <- read.xlsx(here("Data","occ_RN_Norte_Longo","Bentos_RN.xlsx"),
+                                       sheet = 1, colNames = TRUE,detectDates=F)
+## transform deg, min sec coordinates into degrees 
+# replacing special characters by space
+occ_RN_Norte_Longo_peixes_Lat_Long <- occ_RN_Norte_Longo_peixes[,c("VerbatimLat","VerbatimLong")]
+occ_RN_Norte_Longo_peixes_Lat_Long <- lapply (seq (1,ncol(occ_RN_Norte_Longo_peixes_Lat_Long)), function (i) {
+  
+  sub1 <- gsub ("°"," ",occ_RN_Norte_Longo_peixes_Lat_Long[,i])
+  sub2 <- gsub ("''","", sub1)
+  sub3 <- gsub ("'"," ", sub2) 
+  ## some coordinates did not start with zero .. correct them
+ 
+  
+  ;
+  sub3
+})
+
+coord_Lat_Long <- do.call (cbind,occ_RN_Norte_Longo_peixes_Lat_Long)
+colnames(coord_Lat_Long) <- c("LatDegree", "LongDegree")
+coord_degree <- apply (coord_Lat_Long, 2L ,angle2dec  )
+
+## colocar na tabela do Gui
+occ_RN_Norte_Longo_peixes <- cbind (occ_RN_Norte_Longo_peixes, 
+                                    coord_degree)
+# e salvar
+# write.csv (occ_RN_Norte_Longo_peixes,
+#             file=here ("Data","occ_RN_Norte_Longo","Censos_peixes_RN_corrected_ALLuza.csv"))
+
+# mapa mundi
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# cortar o mapa para ver a america do Sul e parte da central
+wm <- ggplot() + 
+  geom_sf (data=world, size = 0.1, 
+           fill= "gray90",colour="gray90") +
+  coord_sf (xlim = c(-60, -25),  ylim = c(-33, 0), expand = FALSE) +
+  theme_bw() + xlab ("Longitude")  + ylab ("Latitude") +
+  ggtitle ("Data of benthic and fish commnities") + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "lightcyan",#darkslategray1
+                                        colour = "lightcyan"),
+        
+        axis.text.x = element_text(size=6),
+        axis.ticks.x=element_line(size=1),
+        axis.text.y = element_text(size=6),
+        axis.ticks.y=element_line(size=1),
+        axis.title.x = element_text(size=8),
+        axis.title.y = element_text(size=8),
+        title = element_text(size=9)) 
+
+## Aued et al
+agg_data_aued <- data.frame (aggregate (occ_Aued_et_al, by = list(occ_Aued_et_al$Lat),FUN=mean)[,c("Lon","Lat")])
+
+# francini
+agg_data_francini <- data.frame (aggregate (occ_Francini_et_al, by = list(occ_Francini_et_al$LAT),FUN=mean)[,c("LONG","LAT")])
+colnames (agg_data_francini) <- c("Lon","Lat")
+
+# insconsistencia nos dados
+# (occ_Francini_et_al [which (occ_Francini_et_al$LONG == min(occ_Francini_et_al$LONG)),])
+
+## Morais
+agg_data_morais <- data.frame (aggregate (occ_Morais_et_al, by = list (occ_Morais_et_al$Lat), FUN=mean)) [c("Lon","Lat")] ## Longo
+agg_data_longo <- data.frame (aggregate (occ_RN_Norte_Longo_peixes, by = list (occ_RN_Norte_Longo_peixes$LatDegree), FUN=mean)) [,c("LongDegree","LatDegree")] 
+colnames (agg_data_longo) <- c("Lon","Lat")
+
+## agg these data
+agg_data <- rbind (agg_data_aued, agg_data_francini, agg_data_morais , agg_data_longo)
+## aggregate these then
+agg_data <- aggregate (agg_data, by = list(agg_data$Lat), FUN=mean)
+
+wm_data <- wm +  geom_point(data = agg_data, aes(x = Lon, y = Lat), size =4, 
+        shape = 19, col = "green4",alpha=0.3)
+
+wm_data
+
+### map of points with data
+```
+
+# Brief description of each data set
+
+## Spatial data
+
+### Fish communities from the Brazilian province
+This dataset, used by Morais et al. 2017 (Journal of Fish Biology), includes fish counts in 4,570 transects distributed over 137 sites in 20 different localities from 0 to 27°S latitude degrees (including oceanic islands). The dataset includes information about fish diet, feeding mode, size, and biomass. Sampling descriptors include Observer ID, site depth, and date. The geographical information is at the site (not transect) level. Data and metadata are available [here](https://drive.google.com/drive/u/0/folders/1Wn4n66sVPoj3YBT1kGFUE2FuMyPq4Iic). These data were generated by the team of [SISBIOTA Mar project](http://www.sisbiota.ufsc.br/).
+
+### Benthic communities from the Brazilian province
+This dataset, used by Aued et al. 2018 (PlosOne), includes the cover of benthic organismos into 3,855 photoquadrats deployed in 40 sites in 15 different localities from 0 to 27°S latitude degrees. Benthic organisms were identified at several taxonomic levels (morphotype, species, order). Sampling descriptors include photoquadrat ID, site depth, date and, for some samples, observer ID. The geographical information is at the site (not transect) level. Data and metadata are available [here](https://drive.google.com/drive/u/0/folders/1sgILttlP6HQ1KOHV5yuyQouLe6Pscjlj). These data were generated by the team of [SISBIOTA Mar project](http://www.sisbiota.ufsc.br/).
+
+### Benthic communities from the Brazilian province (R Francini-Filho)
+This dataset was compiled by A Aued and E Santana, and includes the cover of benthic organismos into the photoquadrats sampled by Aued et al. (2018), as well as by the team of R Francini-Filho. These data include a subset of taxa included in Aued et al. (2018). Benthic organisms were identified at several taxonomic levels (morphotype, species, order). Sampling descriptors include site depth, month and year. Also include site covariates, such as distance offshore, clorophyll, nitrate, salinity. The geographical information is at the site (not transect) level. Data and metadata are available [here](https://drive.google.com/drive/u/0/folders/1o0S5-u1GAPSLwg8P5zzl11xzx4X5pxIU).
+
+### Trophic interactions along the Western Atlantic
+This dataset, used by Longo et al. 2019 (Global Ecology and Biogeograhy), includes the record of interactions of fish species with benthic organisms. These data were obtained with 1,133 unique videoplots deployed in 70 sites in 17 different localities from 34°N and 27°S. Sampling descriptors include recording time, date, depth, observed ID. No geographical information besides site ID is available. Data and metadata are available [here](https://drive.google.com/drive/u/0/folders/126xLZ6Z3xKO_pIT1IfGNj268Qy7E_Lo7). 
+
+### Fish and benthic communities from Rio Grande do Norte
+Data collected by Guilherme Longo and Natália Ross in Rio Grande do Norte. Data of fishes and benthos were collected in the same unit: a transect of 20m2 to register fishes and, within each transect, 10 photoquadrats to register benthic organisms. These data were used by N Roos [Roos et al. 2019](https://www.int-res.com/prepress/m13005.html) and are available [here](https://drive.google.com/drive/u/0/folders/1WG68D_QAPKIZbZhYZmFOenOdUjejnjXn).
+
+## Temporal data
+### Benthic communities from oceanic islands
+Two datasets of benthic communities registered in the Fernando de Noronha Archipelago and Rocas Atoll from 2013 to 2018. These data are available [here](https://drive.google.com/drive/u/0/folders/1DXrcYH3yCbknkEuqpGG59m89LbDJpzVJ). Data from Trindade Island and Martiz Vaz Archipelago, Abrolhos, and Saint Peter and Saint Paul's Archipelago will be available soon. These data were generated by the team of [PELD ILOC project](http://peldiloc.sites.ufsc.br/).
+
+## Trait data
+### Atlantic and Eastern Pacific fishes
+Unpublished data collected by JP Quimbayo. These data include functional traits of 2,153 fish species. Traits describe activity, size, diet, distribution, fishing price. Data and metadata can be found [here](https://drive.google.com/drive/u/0/folders/1aG6zlU5uoeLEPwwdnRKoTAqvldBmyJsp).
+
+### Benthos from the Brazilian province
+Unpublished data collected by A Aued. These data include functional traits of more than 100 taxa of benthic organisms. Traits describe mobility, size, growth form, trophic level, and accretion capacity. Data and metadata can be found [here](https://drive.google.com/drive/u/0/folders/1H54FZnBRwdF-ZdDkJ7hjB4ZnyBULspV8).
+
+### Corals of the Brazilian province 
+Unpublished data collected J Bleuel. These data include functional traits of 24 coral species. Traits describe reproduction mode and period, growth rate and form, and tolerance to depth, light, and temperature. These data can eb found [here](https://drive.google.com/drive/u/0/folders/1vQp0xz_AMqepVbg1sbrFk1lvsjo_ecYL).    
+
+## Spatial polygons
+We are using the most updated, yet unpublished spatial data of marine procted and priority areas (year 2018), from Brazilian Institute for Biodiversity Conservation ('ICMBIO'). These data contain six shapefiles with spatial data about conservation priority areas, artisanal fishing, and implementation costs, urgency and oportunities. These data were produced by the team of AP Prates, and shared by CE Ferreira. They can be found [here](https://drive.google.com/drive/u/0/folders/1Xra9owUYi0dK_T4l8WEn-aH7QnTk6ZtH).
+
+
+```{r,fig.height=7, fig.width=7, echo= F,message=F,warning=F, highlight=F, results= "hide"}
+
+## load spatial data
+## ogrListLayers(here("Data","space_BR_MPA_APPrates", "05_Areas_Prioritarias.gdb"))
+require(here)
+require(rgdal)
+sp_data_MPA <- readOGR(dsn = here("Data","space_BR_MPA_APPrates", "05_Areas_Prioritarias.gdb"), layer= "APZCM_APs")
+## map importance
+colors_map <-  sp_data_MPA@data$IMP
+colors_map [which(colors_map == "Insuficientemente conhecida")] <- "gray80"
+colors_map [which(colors_map == "Alta")] <- "yellow"
+colors_map [which(colors_map == "Muito Alta")] <- "orange"
+colors_map [which(colors_map == "Extremamente Alta")] <- "red"
+## map urgency
+colors_map_ur <-  sp_data_MPA@data$URG
+colors_map_ur [which(colors_map_ur == " ")] <- "gray80"
+colors_map_ur [which(colors_map_ur == "Alta")] <- "yellow"
+colors_map_ur [which(colors_map_ur == "Muito Alta")] <- "orange"
+colors_map_ur [which(colors_map_ur == "Extremamente Alta")] <- "red"
+
+par (mfrow=c(1,2))
+plot(sp_data_MPA,col=colors_map, main= "Priority areas",cex.main=1)
+legend ("bottomright", legend = c("Data deficient",
+                                  "High",
+                                  "Very high",
+                                  "Extremely high"), 
+        pch=15,
+        col = c("gray80", "yellow", "orange","red"),bty="n",cex=0.7)
+
+plot(sp_data_MPA,col=colors_map_ur, main= "Urgency",cex.main=1)
+legend ("bottomright", legend = c("Unknown",
+                                  "High",
+                                  "Very high",
+                                  "Extremely high"), 
+        pch=15,
+        col = c("gray80", "yellow", "orange","red"),bty="n",cex=0.7)
+
+```
+
+## How can you access these data?
+
+Published data are available at their repositories. Unpublished data are only available to ReefSyn members, as defined by our "Policy of data sharing and use" (available [here](https://drive.google.com/drive/u/0/folders/1oPsMM_g33q2QM71orsUTClY1nQzRhoSM)). We will let these data available to external users at **January 2023**, one year after the end of the ReefSyn project.
+  
+### Grant
+
+This project is granted by the Brazilian Biodiversity Synthesis Center - SINBIOSE. This center belongs to the National Council for Scientific and Technological Development (*Conselho Nacional de Desenvolvimento Científico e Tecnológico*, CNPq).  
+    
+    
+    
+    
+**ReefSyn Team**  
+  
+  
+
+
+
+
