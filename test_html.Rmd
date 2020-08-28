@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Who are we?
 
-We are a team of researchers from several countries and institutions engaged in achieve a common objetive: To provide a synthesis about patterns and drivers of reef diversity and supply of ecological services. We are considering several dimensions of marine biodiverstiy, and we will make this synthesis useful to researchers, managers, and society.
+We are a team of researchers from several countries and institutions engaged in achieve a common objetive: To provide a synthesis about patterns and drivers of reef diversity and supplying of ecological services. We are considering several dimensions of marine biodiverstiy, and we will make this synthesis useful to researchers, managers, and society.
 
 
 ```{r, echo = F, fig.height=8,fig.width=8,,message=F, warning=F}
@@ -64,11 +64,9 @@ wordcloud(words = freq_texto_wc$word,
 ```
 
 
-
-
 ## Where are we? Which data are we using?
 
-We are in 221 unique localities distributed along the Brazilian coast and oceanic islands. In these localities, we gather data on fish and benthic communities from published and/or yet unpublished data from local and large-scale research programs conducted along the Brazilian coast over the last decades (SISBOTA-MAR, PELD-ILOC). We are also using data collected beyond the Brazilian coast (e.g., Longo et al. 2019, GEB), including species-level trait datasets of Atlantic fishes and benthos.
+We are in 221 unique localities distributed along the Brazilian coast and oceanic islands. In these localities, we gather data on fish and benthic communities from published and/or yet unpublished data from local and large-scale research programs conducted along the Brazilian coast over the last decades (SISBOTA-MAR, PELD-ILOC). We are also using data collected beyond the Brazilian coast (e.g., Longo et al. 2019, GEB), including species-level trait datasets of Atlantic and Eastern Pacific fishes (Quimbayo et al., unpublished data).
 
 ```{r, echo = F, fig.height=5,fig.width=5,,message=F, warning=F}
 
