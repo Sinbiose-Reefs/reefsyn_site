@@ -253,7 +253,7 @@ legend ("bottomright", legend = c("Unknown",
 
 ## How can you access these data?
 
-Published data can be found at their on-line repositories. Unpublished data are only available to ReefSyn members, as defined by our "Policy of data sharing and use" (available [here](https://drive.google.com/drive/u/0/folders/1oPsMM_g33q2QM71orsUTClY1nQzRhoSM)). We will let these data available to external users at **January 2023**, one year after the end of the ReefSyn project.
+Published data can be found at their on-line repositories. Unpublished data are only available to ReefSyn members, as defined by our "Policy of data sharing and use" (available [here](https://github.com/Sinbiose-Reefs/reefsyn_site/blob/master/DataPolicy_SINBIOSE.pdf)). We will let these data available to external users at **January 2023**, one year after the end of the ReefSyn project. If you are a member of the ReefSyn team, please read our [co-authoring rules](https://github.com/Sinbiose-Reefs/reefsyn_site/blob/master/Coauthor_SINBIOSE.pdf).
   
 ### Grant
 
