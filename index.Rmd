@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 We are a team of researchers from several countries and institutions engaged in achieve a common objetive: To provide a synthesis about patterns and drivers of reef diversity and supplying of ecological services. We are considering several dimensions of marine biodiverstiy, and we will make this synthesis useful to researchers, managers, and society.
 
 
-```{r, echo = F, fig.height=8,fig.width=8,,message=F, warning=F}
+```{r, echo = F, fig.height=8,fig.width=8,message=F, warning=F}
 
 
 ## R code to load data sets and plot points
