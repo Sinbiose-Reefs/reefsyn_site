@@ -101,7 +101,7 @@ occ_RN_Norte_Longo_bentos <- read.xlsx(here("Data","occ_RN_Norte_Longo","Bentos_
                                        sheet = 1, colNames = TRUE,detectDates=F)
 ## transform deg, min sec coordinates into degrees 
 # replacing special characters by space
-occ_RN_Norte_Longo_peixes_Lat_Long <- occ_RN_Norte_Longo_peixes[,c("VerbatimLat","VerbatimLong")]
+occ_RN_Norte_Longo_peixes_Lat_Long <- occ_RN_Norte_Longo_peixes[,c("lat","long")]
 occ_RN_Norte_Longo_peixes_Lat_Long <- lapply (seq (1,ncol(occ_RN_Norte_Longo_peixes_Lat_Long)), function (i) {
   
   sub1 <- gsub ("°"," ",occ_RN_Norte_Longo_peixes_Lat_Long[,i])
@@ -115,8 +115,8 @@ occ_RN_Norte_Longo_peixes_Lat_Long <- lapply (seq (1,ncol(occ_RN_Norte_Longo_pei
 })
 
 coord_Lat_Long <- do.call (cbind,occ_RN_Norte_Longo_peixes_Lat_Long)
-colnames(coord_Lat_Long) <- c("LatDegree", "LongDegree")
 coord_degree <- apply (coord_Lat_Long, 2L ,angle2dec  )
+colnames(coord_degree) <- c("Lat", "Lon")
 
 ## colocar na tabela do Gui
 occ_RN_Norte_Longo_peixes <- cbind (occ_RN_Norte_Longo_peixes, 
@@ -132,7 +132,7 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 wm <- ggplot() + 
   geom_sf (data=world, size = 0.1, 
            fill= "gray90",colour="gray90") +
-  coord_sf (xlim = c(-60, -25),  ylim = c(-33, 0), expand = FALSE) +
+  coord_sf (xlim = c(-60, -25),  ylim = c(-33, 5), expand = FALSE) +
   theme_bw() + xlab ("Longitude")  + ylab ("Latitude") +
   ggtitle ("Data of benthic and fish commnities") + 
   theme(panel.border = element_blank(), 
@@ -161,8 +161,8 @@ colnames (agg_data_francini) <- c("Lon","Lat")
 
 ## Morais
 agg_data_morais <- data.frame (aggregate (occ_Morais_et_al, by = list (occ_Morais_et_al$Lat), FUN=mean)) [c("Lon","Lat")] ## Longo
-agg_data_longo <- data.frame (aggregate (occ_RN_Norte_Longo_peixes, by = list (occ_RN_Norte_Longo_peixes$LatDegree), FUN=mean)) [,c("LongDegree","LatDegree")] 
-colnames (agg_data_longo) <- c("Lon","Lat")
+agg_data_longo <- data.frame (aggregate (occ_RN_Norte_Longo_peixes, by = list (occ_RN_Norte_Longo_peixes$Lat), FUN=mean)) [,c("Lon","Lat")] 
+#colnames (agg_data_longo) <- c("Lon","Lat")
 
 ## agg these data
 agg_data <- rbind (agg_data_aued, agg_data_francini, agg_data_morais , agg_data_longo)
