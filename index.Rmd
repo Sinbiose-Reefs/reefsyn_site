@@ -1,5 +1,5 @@
 ---
-title:  "Project **Brazilian Reefs in the Anthropocene**, BReefs"
+title:  "Project **Brazilian Reefs in the Anthropocene**, ReefSyn"
 author: "Dra. Mariana Bender (PI, UFSM), Dr. Sérgio Floeter (Co-PI, UFSC), Dr. André Luís Luza (Post-Doc, UFSM)"
 date: "2020/08/28"
 output: html_document
@@ -253,7 +253,7 @@ legend ("bottomright", legend = c("Unknown",
 
 ## How can you access these data?
 
-Published data can be found at their on-line repositories. Unpublished data are only available to BReefs members, as defined by our "Policy of data sharing and use" (available [here](https://github.com/Sinbiose-Reefs/reefsyn_site/blob/master/DataPolicy_SINBIOSE.pdf)). We will let these data available to external users at **January 2023**, one year after the end of the BReefs project. If you are a member of the BReefs team, please read our [co-authoring rules](https://github.com/Sinbiose-Reefs/reefsyn_site/blob/master/Coauthor_SINBIOSE.pdf).
+Published data can be found at their on-line repositories. Unpublished data are only available to ReefSyn members, as defined by our "Policy of data sharing and use" (available [here](https://github.com/Sinbiose-Reefs/reefsyn_site/blob/master/DataPolicy_SINBIOSE.pdf)). We will let these data available to external users at **January 2023**, one year after the end of the ReefSyn project. If you are a member of the ReefSyn team, please read our [co-authoring rules](https://github.com/Sinbiose-Reefs/reefsyn_site/blob/master/Coauthor_SINBIOSE.pdf).
   
 ### Grant
 
@@ -262,7 +262,7 @@ This project is granted by the Brazilian Biodiversity Synthesis Center - [SINBIO
     
     
     
-**BReefs Team**  
+**ReefSyn Team**  
   
   
 
