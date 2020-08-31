@@ -46,7 +46,7 @@ freq_texto_wc <-  function_freq_texto_wc (titulo_ingles)
 par(mfrow=c(1,2),mar=rep(0, 4))
 ## inst
 wordcloud(words = institution$inst, freq = institution$freq.Freq,
-          min.freq = 1,scale=c(5, .2),
+          min.freq = 1,scale=c(4, .2),
           max.words=50, 
           random.order=FALSE, rot.per=0.15, 
           colors=brewer.pal(8, "Dark2"))
@@ -54,7 +54,7 @@ wordcloud(words = institution$inst, freq = institution$freq.Freq,
 # tit english
 wordcloud(words = freq_texto_wc$word, 
           freq = freq_texto_wc$freq.Freq,
-          min.freq = 2,scale=c(5, .2),
+          min.freq = 2,scale=c(4, .2),
           max.words=max(freq_texto_wc$freq.Freq)+3, 
           random.order=FALSE, rot.per=0.15, 
           colors=brewer.pal(8, "Dark2"))
